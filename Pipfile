@@ -8,6 +8,7 @@ streamlit = "*"
 numpy = "*"
 pandas = "*"
 plotly = "*"
+plotly-calplot = "*"
 notebook = "*"
 matplotlib = "*"
 
