@@ -2,6 +2,8 @@
 from src.plots.helper import helper_func
 import pandas as pd
 import plotly.express as px
+import streamlit as st
+
 
 def plot(calendar, stv, ste, sp, ss):
     n = 100
@@ -14,4 +16,4 @@ def plot(calendar, stv, ste, sp, ss):
     merged_ = pd.DataFrame(merged.groupby("date")["sales"].sum()).reset_index()
 
     fig = px.line(merged_, x="date", y="sales", title=f'Sales Distribution of random {n} Samples', color_discrete_map= dict(color="red"))
-    fig.show()
+    st.plotly_chart(fig)
