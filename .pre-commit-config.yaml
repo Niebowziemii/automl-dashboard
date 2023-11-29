@@ -1,0 +1,37 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+  - id: check-added-large-files
+  - id: check-case-conflict
+  - id: check-merge-conflict
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+    args: [--markdown-linebreak-ext=md]
+    files: \.(py|sh|rst|yml|yaml)$
+- repo: local
+  hooks:
+  - id: format
+    name: ruff format hook
+    entry: python -m ruff format ./src
+    language: system
+    always_run: true
+    pass_filenames: false
+  - id: isort
+    name: ruff isort hook
+    entry: python -m ruff check ./src  --fix --unsafe-fixes --select I001
+    language: system
+    always_run: true
+    pass_filenames: false
+  - id: lint
+    name: ruff lint hook
+    entry: python -m ruff check ./src --fix
+    language: system
+    always_run: true
+    pass_filenames: false
+  - id: mypy
+    name: ruff mypy hook
+    entry: python -m mypy ./src
+    language: system
+    always_run: true
+    pass_filenames: false
