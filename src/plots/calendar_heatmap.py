@@ -1,40 +1,41 @@
-"""Calendar heatmap plot"""
-import pandas as pd
-import plotly.express as px
-from plotly_calplot import calplot
-import streamlit as st
+"""Calendar heatmap plot."""
+from __future__ import annotations
 
-def plot(calendar, stv, ste, sp, ss):
+from typing import TYPE_CHECKING
+
+from pandas import DataFrame, Index, to_datetime
+from plotly_calplot import calplot
+
+if TYPE_CHECKING:
+    from streamlit.delta_generator import DeltaGenerator
+
+
+def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
+    """Calendar plot with sales.
+
+    Args:
+        data (dict[str, DataFrame]): M5 forecasting accuracy dict formatted as in load.py.
+        module (DeltaGenerator): Layout element for rendering.
+    """
     n = 100
     d = 1400
-    stv_= stv.sample(n=n, random_state=42)
-    stv_random = stv_.drop(["item_id","dept_id","store_id","state_id"], axis=1)
+    stv_ = data["stv"].sample(n=n, random_state=42)
+    stv_random = stv_.drop(["item_id", "dept_id", "store_id", "state_id"], axis=1)
     stv_random = stv_random.groupby("cat_id").sum()
-    # map column names to dates from calendar:
-    stv_random = stv_random.iloc[:, 1:d + 1]
-    stv_random.columns = calendar["date"][:d]
+    stv_random = stv_random.iloc[:, 1 : d + 1]
+    stv_random.columns = Index(data["calendar"]["date"].iloc[:d])
     stv_random = stv_random.T.reset_index()
-    stv_random["date"] = pd.to_datetime(stv_random["date"])
-    print(stv_random)
-    # stv_random.index = stv_random.index.map(lambda x: f"ID_{x}")
+    stv_random["date"] = to_datetime(stv_random["date"])
     fig = [
-        calplot(
-            stv_random,
-            x="date",
-            y=y,
-            dark_theme=True,
-            years_title=True,
-            colorscale=c,
-            gap=0,
-            name="Sales",
-            month_lines_width=3,
-            month_lines_color="#fff"
-        ).update_xaxes(tickangle=0) for y, c in [("FOODS", "greens"), ("HOBBIES", "blues"), ("HOUSEHOLD", "reds")]
+        calplot(stv_random, x="date", y=y, dark_theme=True, years_title=True, colorscale=c, gap=0, name="Sales", month_lines_width=3, month_lines_color="#fff").update_xaxes(
+            tickangle=0
+        )
+        for y, c in [("FOODS", "greens"), ("HOBBIES", "blues"), ("HOUSEHOLD", "reds")]
     ]
-    tab1, tab2, tab3 = st.tabs(["FOODS", "HOBBIES", "HOUSEHOLD"])
-    with tab1:
-        st.plotly_chart(fig[0])
-    with tab2:
-        st.plotly_chart(fig[1])
-    with tab3:
-        st.plotly_chart(fig[2])
+    category = module.selectbox("Select category:", ["FOODS", "HOBBIES", "HOUSEHOLD"])
+    if category == "FOODS":
+        module.plotly_chart(fig[0])
+    if category == "HOBBIES":
+        module.plotly_chart(fig[1])
+    if category == "HOUSEHOLD":
+        module.plotly_chart(fig[2])

@@ -1,21 +1,33 @@
-"""Sales heatmap plot"""
-import plotly.express as px
-import streamlit as st
+"""Sales heatmap plot."""
+from __future__ import annotations
 
-def plot(calendar, stv, ste, sp, ss):
+from typing import TYPE_CHECKING
+
+import plotly.express as px
+
+if TYPE_CHECKING:
+    from pandas import DataFrame
+    from streamlit.delta_generator import DeltaGenerator
+
+
+def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
+    """Sales heatmap of smaples over time.
+
+    Args:
+        data (dict[str, DataFrame]): M5 forecasting accuracy dict formatted as in load.py.
+        module (DeltaGenerator): Layout element for rendering.
+    """
     n = 100
     d = 300
-    stv_ = stv.sample(n=n, random_state=42)
+    stv_ = data["stv"].sample(n=n, random_state=42)
     stv_random = stv_.drop(["id", "dept_id", "cat_id", "store_id", "state_id"], axis=1)
     stv_random = stv_random.groupby("item_id").sum()
-    stv_random = stv_random.iloc[:, 1:d+1]
-    # stv_random.index = stv_random.index.map(lambda x: f"ID_{x}")
-    print(stv_random.iloc[0])
+    stv_random = stv_random.iloc[:, 1 : d + 1]
     fig = px.imshow(
         stv_random,
         color_continuous_scale=px.colors.sequential.Turbo,
         title=f"Sales Heatmap of random {n} Samples over {d} days",
-        labels=dict(x="Days", y="Products", color="Sales")
+        labels={"x": "Days", "y": "Products", "color": "Sales"},
     )
     fig.update_yaxes(showticklabels=False)
-    st.plotly_chart(fig)
+    module.plotly_chart(fig)
