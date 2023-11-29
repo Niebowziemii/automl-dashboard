@@ -13,6 +13,10 @@ notebook = "*"
 matplotlib = "*"
 
 [dev-packages]
+mypy = "*"
+ruff = "*"
+pre-commit-hooks = "==4.5.0"
+pre-commit = "==3.5.0"
 
 [requires]
 python_version = "3.10"
