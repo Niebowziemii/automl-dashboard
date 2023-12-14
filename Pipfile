@@ -11,6 +11,11 @@ plotly = "*"
 plotly-calplot = "*"
 notebook = "*"
 matplotlib = "*"
+mkdocs = "*"
+mkdocs-material = "*"
+mkdocstrings = {extras = ["python"], version = "*"}
+mkdocs-gen-files = "*"
+mkdocs-literate-nav = "*"
 
 [dev-packages]
 mypy = "*"
