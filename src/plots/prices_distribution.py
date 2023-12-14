@@ -3,14 +3,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from plotly import graph_objs as go
-from pandas import DataFrame
 import numpy as np
+from plotly import graph_objs as go
 
 if TYPE_CHECKING:
+    from pandas import DataFrame
     from streamlit.delta_generator import DeltaGenerator
 
-from src.plots.helper import helper_func  # Assuming there's a helper function
+
 
 def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
     """Distribution of prices.
@@ -19,7 +19,6 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
         data (DataFrame): DataFrame containing price data.
         module (DeltaGenerator): Layout element for rendering.
     """
-
     available_states = list(data["stv"]["state_id"].unique())
     selected_states = module.multiselect(
         "Select state:",
@@ -60,11 +59,11 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
         yaxis_title_text="Count",
         bargap=0.2,  # gap between bars of adjacent location coordinates.
         bargroupgap=0.1,  # gap between bars of the same location coordinate.
-        xaxis = dict(
-            tickmode='array',
-            tickvals=[i for i in range(maximum_value + 1)],
-            ticktext=[str(i) for i in range(maximum_value)] + [f">"],
-        )
+        xaxis={
+            "tickmode": "array",
+            "tickvals": list(range(maximum_value + 1)),
+            "ticktext": [str(i) for i in range(maximum_value)] + list(">"),
+        }
     )
 
     fig.add_trace(
