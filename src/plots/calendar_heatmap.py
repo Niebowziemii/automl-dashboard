@@ -10,12 +10,13 @@ if TYPE_CHECKING:
     from streamlit.delta_generator import DeltaGenerator
 
 
-def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
+def plot(data: dict[str, DataFrame], module: DeltaGenerator, key_s: str) -> None:
     """Calendar plot with sales.
 
     Args:
         data (dict[str, DataFrame]): M5 forecasting accuracy dict formatted as in load.py.
         module (DeltaGenerator): Layout element for rendering.
+        key_s (str): Key for streamlit components.
     """
     n = 100
     d = 1400
@@ -32,7 +33,7 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
         )
         for y, c in [("FOODS", "greens"), ("HOBBIES", "blues"), ("HOUSEHOLD", "reds")]
     ]
-    category = module.selectbox("Select category:", ["FOODS", "HOBBIES", "HOUSEHOLD"])
+    category = module.selectbox("Select category:", ["FOODS", "HOBBIES", "HOUSEHOLD"], key=key_s + "0")
     if category == "FOODS":
         module.plotly_chart(fig[0])
     if category == "HOBBIES":

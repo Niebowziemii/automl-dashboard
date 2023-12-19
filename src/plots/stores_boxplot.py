@@ -10,12 +10,13 @@ if TYPE_CHECKING:
     from streamlit.delta_generator import DeltaGenerator
 
 
-def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
+def plot(data: dict[str, DataFrame], module: DeltaGenerator, key_s: str) -> None:  # noqa: ARG001
     """Sales per store per category of random n Samples.
 
     Args:
         data (dict[str, DataFrame]): M5 forecasting accuracy dict formatted as in load.py.
         module (DeltaGenerator): Layout element for rendering.
+        key_s (str): Key for streamlit components.
     """
     n = 100
     stv_ = data["stv"].sample(n=n, random_state=42)

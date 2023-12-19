@@ -11,20 +11,16 @@ if TYPE_CHECKING:
     from streamlit.delta_generator import DeltaGenerator
 
 
-
-def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
+def plot(data: dict[str, DataFrame], module: DeltaGenerator, key_s: str) -> None:
     """Distribution of prices.
 
     Args:
         data (DataFrame): DataFrame containing price data.
         module (DeltaGenerator): Layout element for rendering.
+        key_s (str): Key for streamlit components.
     """
     available_states = list(data["stv"]["state_id"].unique())
-    selected_states = module.multiselect(
-        "Select state:",
-        available_states,
-        available_states,
-    )
+    selected_states = module.multiselect("Select state:", available_states, available_states, key=key_s + "0")
 
     available_stores = list(
         filter(
@@ -32,19 +28,12 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
             list(data["stv"]["store_id"].unique()),
         )
     )
-    selected_stores = module.multiselect("Select store:", available_stores, available_stores)
+    selected_stores = module.multiselect("Select store:", available_stores, available_stores, key=key_s + "1")
 
     available_categories = list(data["stv"]["cat_id"].unique())
-    selected_categories = module.multiselect(
-        "Select category:",
-        available_categories,
-        available_categories,
-    )
+    selected_categories = module.multiselect("Select category:", available_categories, available_categories, key=key_s + "2")
 
-    filtered_sp = data["sp"][
-        data["sp"]["store_id"].isin(selected_stores) &
-        data["sp"]["item_id"].str.startswith(tuple(selected_categories))
-        ]
+    filtered_sp = data["sp"][data["sp"]["store_id"].isin(selected_stores) & data["sp"]["item_id"].str.startswith(tuple(selected_categories))]
 
     if len(filtered_sp) == 0:
         module.warning("No data available.")
@@ -63,7 +52,7 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
             "tickmode": "array",
             "tickvals": list(range(maximum_value + 1)),
             "ticktext": [str(i) for i in range(maximum_value)] + list(">"),
-        }
+        },
     )
 
     fig.add_trace(
