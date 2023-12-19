@@ -34,9 +34,7 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
             list(data["stv"]["store_id"].unique()),
         )
     )
-    selected_stores = module.multiselect(
-        "Select store:", available_stores, available_stores
-    )
+    selected_stores = module.multiselect("Select store:", available_stores, available_stores)
 
     available_categories = list(data["stv"]["cat_id"].unique())
     selected_categories = module.multiselect(
@@ -45,22 +43,15 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
         available_categories,
     )
 
-    filtered_stv = data["stv"].query(
-        f"state_id in {selected_states} & store_id in {selected_stores} & cat_id in {selected_categories}"
-    )
+    filtered_stv = data["stv"].query(f"state_id in {selected_states} & store_id in {selected_stores} & cat_id in {selected_categories}")
 
     if len(filtered_stv) == 0:
         module.warning("No data available.")
-        return None
+        return
 
-    if len(filtered_stv) < n:
-        sample_stv = filtered_stv
-    else:
-        sample_stv = filtered_stv.sample(n=n, random_state=42)
+    sample_stv = filtered_stv if len(filtered_stv) < n else filtered_stv.sample(n=n, random_state=42)
 
-    merged = helper_func(sample_stv).merge(
-        data["calendar"], how="left", left_on="dates", right_on="d"
-    )
+    merged = helper_func(sample_stv).merge(data["calendar"], how="left", left_on="dates", right_on="d")
 
     merged_ = DataFrame(merged.groupby("date")["sales"].sum()).reset_index()
 
@@ -75,17 +66,15 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
 
     fig.update_xaxes(
         rangeslider_visible=True,
-        rangeselector=dict(
-            buttons=list(
-                [
-                    dict(count=1, label="1m", step="month", stepmode="backward"),
-                    dict(count=3, label="3m", step="month", stepmode="backward"),
-                    dict(count=6, label="6m", step="month", stepmode="backward"),
-                    dict(count=1, label="1y", step="year", stepmode="backward"),
-                    dict(step="all"),
-                ]
-            )
-        ),
+        rangeselector={
+            "buttons": [
+                {"count": 1, "label": "1m", "step": "month", "stepmode": "backward"},
+                {"count": 3, "label": "3m", "step": "month", "stepmode": "backward"},
+                {"count": 6, "label": "6m", "step": "month", "stepmode": "backward"},
+                {"count": 1, "label": "1y", "step": "year", "stepmode": "backward"},
+                {"step": "all"},
+            ]
+        },
     )
 
     fig.update_layout(

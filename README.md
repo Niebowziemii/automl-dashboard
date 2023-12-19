@@ -12,6 +12,8 @@ automl-dashboard
 │       └── sell_prices.csv
 ...
 ```
+Download input data [here](https://www.kaggle.com/competitions/m5-forecasting-accuracy/data)
+
 ## To run the app use the following:
 
 in /automl-dashboard:
