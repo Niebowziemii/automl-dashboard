@@ -1,3 +1,8 @@
-**Cytops** is an innovative open-source software solution that simplifies the process of gating in flow cytometry. Designed
-to automate this crucial aspect of cytometry analysis, Cytops increases accuracy, boosts productivity, and makes it 
-easier for researchers to focus on generating insights from their cytometry data.
+**AutoML Dashboard** is a cutting-edge dashboard application tailored for the 
+M5 competition, revolutionizing how data is visualized and analyzed. As an 
+open-source tool, it's specifically designed to handle the complex datasets of 
+the M5 forecasting competition, offering intuitive and interactive visualizations. 
+AutoML Dashboard streamlines the process of interpreting time series data, enhancing
+precision and efficiency. This empowers analysts and participants to draw meaningful 
+conclusions and insights from the competition data, elevating their forecasting 
+strategies.
