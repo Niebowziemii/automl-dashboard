@@ -14,13 +14,13 @@ git clone https://github.com/Niebowziemii/automl-dashboard.git
 ### Step 2 Download the data
 
 Enter the following link:
-https://www.kaggle.com/c/m5-forecasting-accuracy/data
+[HERE] (https://www.kaggle.com/c/m5-forecasting-accuracy/data)
 
 Authorize yourself and click the "download all" button to obtain the zip package:
 
 ![image](https://github.com/Niebowziemii/automl-dashboard/assets/59135705/3cc9a056-ac3a-4ac5-93a8-f9f671bc69c7)
 
-Extract the downloaded folder in the root of the project and change the name of the folder to `inout`
+Extract the downloaded folder in the root of the project and change the name of the folder to `input`
 
 ![image](https://github.com/Niebowziemii/automl-dashboard/assets/59135705/7e8ecd4e-526c-4d70-b0a8-4f966dd823a4)
 
