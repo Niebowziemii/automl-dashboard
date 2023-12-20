@@ -14,7 +14,7 @@ git clone https://github.com/Niebowziemii/automl-dashboard.git
 ### Step 2 Download the data
 
 Enter the following link:
-[HERE] (https://www.kaggle.com/c/m5-forecasting-accuracy/data)
+[HERE](https://www.kaggle.com/c/m5-forecasting-accuracy/data)
 
 Authorize yourself and click the "download all" button to obtain the zip package:
 
