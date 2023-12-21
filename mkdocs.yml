@@ -1,0 +1,32 @@
+site_name: AutoML Dashboard Documentation
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+  - search
+  - gen-files:
+      scripts:
+        - docs/gen_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - offline
+theme:
+  name: "material"
+  features:
+    - toc.follow
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+docs_dir: docs
+nav:
+  - User Guide: user-guide.html
+  - Contribution Guide: contribution-guide.html
+  - Code Reference: reference/
+
+use_directory_urls: false

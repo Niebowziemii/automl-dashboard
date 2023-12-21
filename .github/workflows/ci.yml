@@ -1,9 +1,14 @@
-name: CI
+name: CI and Deployment
 
-on: ["push", "pull_request"]
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   ci:
@@ -24,3 +29,11 @@ jobs:
         run: pipenv run ruff check ./src
       - name: Run Mypy
         run: pipenv run mypy ./src
+      - uses: actions/cache@v3
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-
+      - name: Deploy documentation
+        run: pipenv run mkdocs gh-deploy --force
