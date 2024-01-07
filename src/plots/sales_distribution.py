@@ -36,7 +36,15 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator, key_s: str) -> None
     available_categories = list(data["stv"]["cat_id"].unique())
     selected_categories = module.multiselect("Select category:", available_categories, available_categories, key=key_s + "2")
 
-    filtered_stv = data["stv"].query(f"state_id in {selected_states} & store_id in {selected_stores} & cat_id in {selected_categories}")
+    available_subcategories = list(
+        filter(
+            lambda subcategory: subcategory.startswith(tuple(selected_categories)),
+            list(data["stv"]["dept_id"].unique()),
+        )
+    )
+    selected_subcategories = module.multiselect("Select subcategory:", available_subcategories, available_subcategories, key=key_s + "3")
+
+    filtered_stv = data["stv"].query(f"state_id in {selected_states} & store_id in {selected_stores} & cat_id in {selected_categories} & dept_id in {selected_subcategories}")
 
     if len(filtered_stv) == 0:
         module.warning("No data available.")
