@@ -12,21 +12,18 @@ if TYPE_CHECKING:
 from src.plots.helper import helper_func
 
 
-def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
+def plot(data: dict[str, DataFrame], module: DeltaGenerator, key_s: str) -> None:
     """Distribution of sales.
 
     Args:
         data (dict[str, DataFrame]): M5 forecasting accuracy dict formatted as in load.py.
         module (DeltaGenerator): Layout element for rendering.
+        key_s (str): Key for streamlit components.
     """
     n = 1000
 
     available_states = list(data["stv"]["state_id"].unique())
-    selected_states = module.multiselect(
-        "Select state:",
-        available_states,
-        available_states,
-    )
+    selected_states = module.multiselect("Select state:", available_states, available_states, key=key_s + "0")
 
     available_stores = list(
         filter(
@@ -34,16 +31,20 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator) -> None:
             list(data["stv"]["store_id"].unique()),
         )
     )
-    selected_stores = module.multiselect("Select store:", available_stores, available_stores)
+    selected_stores = module.multiselect("Select store:", available_stores, available_stores, key=key_s + "1")
 
     available_categories = list(data["stv"]["cat_id"].unique())
-    selected_categories = module.multiselect(
-        "Select category:",
-        available_categories,
-        available_categories,
-    )
+    selected_categories = module.multiselect("Select category:", available_categories, available_categories, key=key_s + "2")
 
-    filtered_stv = data["stv"].query(f"state_id in {selected_states} & store_id in {selected_stores} & cat_id in {selected_categories}")
+    available_subcategories = list(
+        filter(
+            lambda subcategory: subcategory.startswith(tuple(selected_categories)),
+            list(data["stv"]["dept_id"].unique()),
+        )
+    )
+    selected_subcategories = module.multiselect("Select subcategory:", available_subcategories, available_subcategories, key=key_s + "3")
+
+    filtered_stv = data["stv"].query(f"state_id in {selected_states} & store_id in {selected_stores} & cat_id in {selected_categories} & dept_id in {selected_subcategories}")
 
     if len(filtered_stv) == 0:
         module.warning("No data available.")
