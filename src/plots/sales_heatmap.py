@@ -95,7 +95,11 @@ def plot(
         module.warning("No data available.")
         return
 
-    stv_ = filtered_stv.sample(n=n, random_state=42)
+    stv_ = (
+        filtered_stv
+        if len(filtered_stv) < n
+        else filtered_stv.sample(n=n, random_state=42)
+    )
     stv_random = stv_.drop(["id", "dept_id", "cat_id", "store_id", "state_id"], axis=1)
     stv_random = stv_random.groupby("item_id").sum()
     stv_random.columns = stv_random.columns.map(

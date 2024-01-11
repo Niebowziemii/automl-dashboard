@@ -21,9 +21,12 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator, key_s: str) -> None
         key_s (str): Key for streamlit components.
     """
     n = 1000
+    left_column, rigth_column = module.columns(2)
 
     available_states = list(data["stv"]["state_id"].unique())
-    selected_states = module.multiselect("Select state:", available_states, available_states, key=key_s + "0")
+    selected_states = left_column.multiselect(
+        "Select state:", available_states, available_states, key=key_s + "0"
+    )
 
     available_stores = list(
         filter(
@@ -31,10 +34,14 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator, key_s: str) -> None
             list(data["stv"]["store_id"].unique()),
         )
     )
-    selected_stores = module.multiselect("Select store:", available_stores, available_stores, key=key_s + "1")
+    selected_stores = left_column.multiselect(
+        "Select store:", available_stores, available_stores, key=key_s + "1"
+    )
 
     available_categories = list(data["stv"]["cat_id"].unique())
-    selected_categories = module.multiselect("Select category:", available_categories, available_categories, key=key_s + "2")
+    selected_categories = rigth_column.multiselect(
+        "Select category:", available_categories, available_categories, key=key_s + "2"
+    )
 
     available_subcategories = list(
         filter(
@@ -42,17 +49,30 @@ def plot(data: dict[str, DataFrame], module: DeltaGenerator, key_s: str) -> None
             list(data["stv"]["dept_id"].unique()),
         )
     )
-    selected_subcategories = module.multiselect("Select subcategory:", available_subcategories, available_subcategories, key=key_s + "3")
+    selected_subcategories = rigth_column.multiselect(
+        "Select subcategory:",
+        available_subcategories,
+        available_subcategories,
+        key=key_s + "3",
+    )
 
-    filtered_stv = data["stv"].query(f"state_id in {selected_states} & store_id in {selected_stores} & cat_id in {selected_categories} & dept_id in {selected_subcategories}")
+    filtered_stv = data["stv"].query(
+        f"state_id in {selected_states} & store_id in {selected_stores} & cat_id in {selected_categories} & dept_id in {selected_subcategories}"
+    )
 
     if len(filtered_stv) == 0:
         module.warning("No data available.")
         return
 
-    sample_stv = filtered_stv if len(filtered_stv) < n else filtered_stv.sample(n=n, random_state=42)
+    sample_stv = (
+        filtered_stv
+        if len(filtered_stv) < n
+        else filtered_stv.sample(n=n, random_state=42)
+    )
 
-    merged = helper_func(sample_stv).merge(data["calendar"], how="left", left_on="dates", right_on="d")
+    merged = helper_func(sample_stv).merge(
+        data["calendar"], how="left", left_on="dates", right_on="d"
+    )
 
     merged_ = DataFrame(merged.groupby("date")["sales"].sum()).reset_index()
 
